@@ -18,7 +18,7 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        Fraction *f = [Fraction alloc];
+        Fraction *f = [[Fraction alloc] init];
         [f setNumberator: 1];
         [f setDenominator: 3];
         [f print];
