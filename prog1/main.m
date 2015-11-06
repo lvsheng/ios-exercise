@@ -8,14 +8,43 @@
 
 #import <Foundation/Foundation.h>
 
+@interface Fraction : NSObject
+
+-(void) print;
+-(void) setNumberator: (int) n;
+-(void) setDenominator: (int) d;
+
+@end
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        long double total = 0;
-        for (int i = 0; i < 11; ++i) {
-            total += (double)i / 3;
-        }
-        // insert code here...
-        NSLog(@"Hello, you! %10Lf® %s %p", total, "hello", "hi");
+        Fraction *f = [Fraction alloc];
+        [f setNumberator: 1];
+        [f setDenominator: 3];
+        [f print];
     }
     return 0;
 }
+
+@implementation Fraction
+{
+    int numberator;
+    int denominator;
+}
+
+-(void) print
+{
+    NSLog(@"%i/%i", numberator, denominator);
+}
+
+-(void) setNumberator: (int) n
+{
+    numberator = n;
+}
+
+-(void) setDenominator: (int) d
+{
+    denominator = d;
+}
+
+@end
