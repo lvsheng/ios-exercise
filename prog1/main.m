@@ -70,14 +70,14 @@ int main(int argc, const char * argv[]) {
             NSLog(@"Nil - 1: %d", Nil - 1);
             NSLog(@"Nil == 0: %d", (Nil == 0));
         }
-        
+
         NSLog(@"\n\n---------------------------");
         if (NAN) {
             NSLog(@"NAN is true, NAN: %d, NAN-1: %d", NAN, NAN - 1);
         } else {
             NSLog(@"NAN is not true");
         }
-        
+
         NSLog(@"\n\n---------------------------");
         int a;
         if (a) {
@@ -118,14 +118,14 @@ int main(int argc, const char * argv[]) {
         } else {
             NSLog(@"test is not true");
         }
-        
-        
+
+
         NSLog(@"\n\n---------------------------");
         BOOL bo = 3;
         if (bo && @"hello") {
             NSLog(@"value of bo && @\"hello\": , %d", bo && @"hello");
         }
-        
+
         int n = 3;
         n = n ?: -1;
         NSLog(@"n: %d", n);
