@@ -120,7 +120,7 @@ int main(int argc, const char * argv[]) {
         }
         
         
-        NSLog(@"\n\n--------------------------- %s");
+        NSLog(@"\n\n---------------------------");
         BOOL bo = 3;
         if (bo && @"hello") {
             NSLog(@"value of bo && @\"hello\": , %d", bo && @"hello");
