@@ -34,6 +34,8 @@ int main(int argc, const char * argv[]) {
         //use imp (no compiler warning):
         NSLog(@"imp调用");
         IMP imp = [p methodForSelector:sel];
+        NSLog(@"OBJC_OLD_DISPATCH_PROTOTYPES: %d", OBJC_OLD_DISPATCH_PROTOTYPES);
+        // OBJC_OLD_DISPATCH_PROTOTYPES为0，故IMP在objc.h中被定义为无参数函数指针，故需再进一步强制转换（同时试验发现可以自己改objc.h来改动。。。好可怕）
         void(*func)(id, SEL, NSNumber *, NSNumber *) = (void*) imp;
         if ([p respondsToSelector:sel]) {
             //TODO: 实际调用imp时传入的sel其实无效。。。？那干嘛还都要传呀？
