@@ -12,26 +12,31 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         MyPoint *p = [MyPoint new];
-        [p setX:@3];
-        [p setY:@4];
-        [p print];
-
         [p setX:@5 andY:@5];
         [p print];
 
-        SEL selSetX = NSSelectorFromString(@"setX:");
-        SEL selSetY = NSSelectorFromString(@"setY:");
-        [p performSelector:selSetX withObject:@1];
-        [p performSelector:selSetY withObject:@1];
+        //SEL sel = NSSelectorFromString(@"someNonExistSelector");
+        SEL sel = NSSelectorFromString(@"setX:andY:");
+
+        //use sel (use pragma to disable compiler warning):
+        if ([p respondsToSelector:sel]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            [p performSelector:sel withObject:@50 withObject:@50];
+#pragma clang diagnostic pop
+        } else {
+            NSLog(@"non existed selector: %s", sel_getName(sel));
+        }
         [p print];
 
-        SEL selSetXAndY = NSSelectorFromString(@"setX:andY:");
-        [p performSelector:selSetXAndY withObject:@2 withObject:@3];
-        [p print];
-
-        IMP impSetXAndY = [p methodForSelector:selSetXAndY];
-        void(*funcSetSAndY)(id, SEL, NSNumber *, NSNumber *) = (void*) impSetXAndY;
-        funcSetSAndY(p, selSetXAndY, @100, @100);
+        //use imp (no compiler warning):
+        IMP imp = [p methodForSelector:sel];
+        void(*func)(id, SEL, NSNumber *, NSNumber *) = (void*) imp;
+        if ([p respondsToSelector:sel]) {
+            func(p, sel, @100, @100);
+        } else {
+            NSLog(@"non existed selector: %s, and the func still can got: %p, %d", sel_getName(sel), func, (int)func);
+        }
         [p print];
     }
     return 0;
