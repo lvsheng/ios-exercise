@@ -6,10 +6,14 @@
 #import "MyPoint.h"
 
 
-@implementation MyPoint {
+@implementation MyPoint
 
+-(NSNumber *) x {
+    return mX;
 }
-
+-(NSNumber *) y {
+    return mY;
+}
 -(void) setX:(NSNumber *)x {
     mX = x;
 }

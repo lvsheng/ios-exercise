@@ -18,6 +18,21 @@ int main(int argc, const char * argv[]) {
 
         [p setX:@5 andY:@5];
         [p print];
+
+        SEL selSetX = NSSelectorFromString(@"setX:");
+        SEL selSetY = NSSelectorFromString(@"setY:");
+        [p performSelector:selSetX withObject:@1];
+        [p performSelector:selSetY withObject:@1];
+        [p print];
+
+        SEL selSetXAndY = NSSelectorFromString(@"setX:andY:");
+        [p performSelector:selSetXAndY withObject:@2 withObject:@3];
+        [p print];
+
+        IMP impSetXAndY = [p methodForSelector:selSetXAndY];
+        void(*funcSetSAndY)(id, SEL, NSNumber *, NSNumber *) = (void*) impSetXAndY;
+        funcSetSAndY(p, selSetXAndY, @100, @100);
+        [p print];
     }
     return 0;
 }
