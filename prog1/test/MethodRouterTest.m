@@ -32,7 +32,7 @@
 }
 
 +(void) test {
-    NSLog(@"\n\n--------------------------------------------");
+    NSLog(@"\n\n--------------MethodRouterTest.test--------------");
 
     //TODO: place to map
     A *a = [A new];
