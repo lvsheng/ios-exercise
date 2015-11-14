@@ -38,7 +38,8 @@ int main(int argc, const char * argv[]) {
         // OBJC_OLD_DISPATCH_PROTOTYPES为0，故IMP在objc.h中被定义为无参数函数指针，故需再进一步强制转换（同时试验发现可以自己改objc.h来改动。。。好可怕）
         void(*func)(id, SEL, NSNumber *, NSNumber *) = (void*) imp;
         if ([p respondsToSelector:sel]) {
-            //TODO: 实际调用imp时传入的sel其实无效。。。？那干嘛还都要传呀？
+            //这里需要重复传入SEL的原因可参考：http://stackoverflow.com/questions/14305191/what-was-the-second-parameter-in-id-impid-sel-used-for
+            //但某些情况，不传入也能“碰巧”(?)运行成功
             func(p, NSSelectorFromString(@"h123f&*$#_asfda"), @100, @100);
         } else {
             NSLog(@"non existed selector: %s, and the func still can got: %p, %d", sel_getName(sel), func, (int)func);
