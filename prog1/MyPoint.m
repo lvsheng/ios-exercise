@@ -13,6 +13,9 @@
 -(void) setX:(NSNumber *)x {
     mX = x;
 }
+//-(void) setX:(int)x { //will caught error
+//    mX = @4;
+//}
 -(void) setY:(NSNumber *)y {
     mY = y;
 }

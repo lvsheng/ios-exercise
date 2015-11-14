@@ -15,6 +15,7 @@
 -(NSNumber *) x;
 -(NSNumber *) y;
 -(void) setX: (NSNumber *)x;
+//-(void) setX: (int)x; //will caught error
 -(void) setY: (NSNumber *)y;
 -(void) setX: (NSNumber *)x andY: (NSNumber *)y;
 -(void) print;
