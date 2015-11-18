@@ -12,10 +12,12 @@
 
 void testSEL ();
 void testPolymorphism();
-void testStringTime ();
+void testSelTime(int);
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        testStringTime();
+        testSelTime((int) 1e2);
+        testSelTime((int) 184);
+        testSelTime((int) 1e3);
 //        testSEL();
 //        testPolymorphism();
 //        [MethodRouterTest test];
@@ -23,17 +25,18 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
-void testStringTime () {
+//TODO: 试现在o2o条件下的性能（两种方式）
+void testSelTime(int amount) {
     MyPoint *point = [MyPoint new];
+    NSLog(@"【start】, amount: %d", amount);
 
-    int amount = (int) 1e5;
     int i;
 
     NSLog(@"---------------------直接调用---------------------");
     for (i = 0; i < amount; ++i) {
         [point test];
     }
-    NSLog(@"---------------------~直接调用---------------------\n\n");
+    NSLog(@"done\n\n");
 
     NSString *methodName = @"test";
 
@@ -42,7 +45,7 @@ void testStringTime () {
         SEL sel = NSSelectorFromString(methodName);
         [point performSelector:sel];
     }
-    NSLog(@"---------------------~SEL调用---------------------\n\n");
+    NSLog(@"done\n\n");
 
     NSLog(@"---------------------imp调用---------------------");
     for (i = 0; i < amount; ++i) {
@@ -50,9 +53,21 @@ void testStringTime () {
         IMP imp = [point methodForSelector:sel];
         void(*func)(id, SEL) = (void*) imp;
         func(point, sel);
-        [point performSelector:sel];
     }
-    NSLog(@"---------------------~imp调用---------------------\n\n");
+    NSLog(@"done\n\n");
+
+    NSLog(@"---------------------string append---------------------");
+    for (i = 0; i < amount; ++i) {
+        methodName = [methodName stringByAppendingString:@"a"];
+    }
+    NSLog(@"done\n\n");
+
+    NSLog(@"---------------------string append + NSSelectorFromString---------------------");
+    for (i = 0; i < amount; ++i) {
+        methodName = [methodName stringByAppendingString:@"a"];
+        SEL sel = NSSelectorFromString(methodName);
+    }
+    NSLog(@"done\n\n");
 }
 
 void testSEL () {
