@@ -30,4 +30,6 @@
 -(void) print {
     NSLog(@"x: %@, y: %@", mX, mY);
 }
+-(void) test {
+}
 @end

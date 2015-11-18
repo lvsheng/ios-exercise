@@ -12,13 +12,47 @@
 
 void testSEL ();
 void testPolymorphism();
+void testStringTime ();
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        testSEL();
-        testPolymorphism();
-        [MethodRouterTest test];
+        testStringTime();
+//        testSEL();
+//        testPolymorphism();
+//        [MethodRouterTest test];
     }
     return 0;
+}
+
+void testStringTime () {
+    MyPoint *point = [MyPoint new];
+
+    int amount = (int) 1e5;
+    int i;
+
+    NSLog(@"---------------------直接调用---------------------");
+    for (i = 0; i < amount; ++i) {
+        [point test];
+    }
+    NSLog(@"---------------------~直接调用---------------------\n\n");
+
+    NSString *methodName = @"test";
+
+    NSLog(@"---------------------SEL调用---------------------");
+    for (i = 0; i < amount; ++i) {
+        SEL sel = NSSelectorFromString(methodName);
+        [point performSelector:sel];
+    }
+    NSLog(@"---------------------~SEL调用---------------------\n\n");
+
+    NSLog(@"---------------------imp调用---------------------");
+    for (i = 0; i < amount; ++i) {
+        SEL sel = NSSelectorFromString(methodName);
+        IMP imp = [point methodForSelector:sel];
+        void(*func)(id, SEL) = (void*) imp;
+        func(point, sel);
+        [point performSelector:sel];
+    }
+    NSLog(@"---------------------~imp调用---------------------\n\n");
 }
 
 void testSEL () {

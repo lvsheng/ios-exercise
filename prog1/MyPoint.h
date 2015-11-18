@@ -19,4 +19,5 @@
 -(void) setY: (NSNumber *)y;
 -(void) setX: (NSNumber *)x andY: (NSNumber *)y;
 -(void) print;
+-(void) test;
 @end
