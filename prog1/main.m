@@ -15,11 +15,11 @@ void testPolymorphism();
 void testSelTime(int);
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        testSelTime((int) 1e2);
-        testSelTime((int) 184);
-        testSelTime((int) 1e3);
+//        testSelTime((int) 1e2);
+//        testSelTime((int) 184);
+//        testSelTime((int) 1e3);
 //        testSEL();
-//        testPolymorphism();
+        testPolymorphism();
 //        [MethodRouterTest test];
     }
     return 0;
@@ -110,12 +110,32 @@ void testSEL () {
 }
 
 @interface SubMyPoint: MyPoint
+//可重载父类同名方法，但参数必需一致
+//但selector也算在方法名中，故setX:与setX:withY与setX:withY:andPrint是三个不同的方法
+//但貌似父类方法、子类方法、甚至@interface与@implementation中、声明与调用中参数类型不同也只是警告
 -(void)print;
+-(void) setX: (NSString *)str;
+-(void) setX: (NSNumber *)x andY: (NSNumber *)y;
+-(void) setX: (NSNumber *)x andY: (NSNumber *)y andPrint: (NSString *) str;
 @end
 @implementation SubMyPoint
 -(void)print {
     NSLog(@"print in SubMyPoint, and i'll call super:");
     [super print];
+}
+-(void) setX: (NSNumber *)str {
+    NSLog(@"setX(int) SubMyPoing, i'll call super, %@", str);
+    [super setX:@101];
+}
+-(void) setX: (NSNumber *)xx andY: (NSNumber *)y {
+    NSLog(@"setX andY in SubMyPoing, i'll call super");
+    [super setX:xx andY:y];
+}
+-(void) setX: (NSNumber *)x andY: (NSNumber *)y andPrint: (NSString *) str {
+    NSLog(@"setX:andY:andPrint in SubMyPoing, i'll call super setX and y, and then print");
+    [super setX:x andY:y];
+    NSLog(@"print: %@", str);
+    [self print];
 }
 @end
 void testPolymorphism () {
@@ -144,5 +164,13 @@ void testPolymorphism () {
     SubMyPoint *pSubSub = [SubMyPoint new];
     pSubSub.x = @4;
     pSubSub.y = @4;
+    [pSubSub print];
+
+    [pSubSub setX:@1 andY:@1 andPrint:@"hello"];
+
+    [pSubSub setX:@"3"];
+    [pSubSub print];
+
+    [pSubSub setX:[NSNumber numberWithDouble:12]];
     [pSubSub print];
 }
