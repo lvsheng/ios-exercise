@@ -10,6 +10,41 @@
 #import "./MyPoint.h"
 #import "test/MethodRouterTest.h"
 
+void testException () {
+    id i = [MyPoint new];
+    SEL sel = @selector(add:);
+    @try {
+        @try {
+            [i performSelector:sel];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"catched exce: %@", exception);
+            @throw;
+        }
+    }
+    @catch (NSException *exception) {
+        NSLog(@"exception: %@", exception);
+    }
+
+    @try {
+        [NSException raise:@"Invalid foo value" format:@"foo of %d is invalid", 3];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"my exception: %@", exception);
+    }
+
+    @try {
+        @throw [NSException exceptionWithName:@"some" reason:@"some reason" userInfo:nil];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"my exception: %@", exception);
+    }
+    @finally {
+        NSLog(@"finally");
+    }
+    NSLog(@"after try");
+}
+
 @interface ClassA: NSObject
 -(int) add:(int)n;
 //oc仅通过selector定位方法，而参数类型并不能在定位方法上起到作用。故：
@@ -275,7 +310,8 @@ int main(int argc, const char * argv[]) {
 //        testCallMethodError();
 //        testMessage();
 //        testCallSameNameMethod();
-        testIsMemberOf();
+//        testIsMemberOf();
+        testException();
     }
     return 0;
 }
