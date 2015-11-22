@@ -12,6 +12,10 @@
 
 @interface ClassA: NSObject
 -(int) add:(int)n;
+//oc仅通过selector定位方法，而参数类型并不能在定位方法上起到作用。故：
+//-(int) add:(double)n; //不允许存在同名但参数类型不同的方法
+//-(double) add:(int)a; //返回值不同也不行
+-(int) add:(int)a with:(int)b; //但参数描述也算在选择器中，故可以
 @end
 @implementation ClassA
 -(int) add: (int)n {
