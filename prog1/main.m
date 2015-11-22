@@ -19,8 +19,13 @@ int main(int argc, const char * argv[]) {
 //        testSelTime((int) 184);
 //        testSelTime((int) 1e3);
 //        testSEL();
-        testPolymorphism();
+//        testPolymorphism();
 //        [MethodRouterTest test];
+        NSNumber *a = [NSNumber new]; //TODO 除了@，不能new或者alloc,init方式来创建一个NSNumber么？打印出来地址都是0呢~
+        NSNumber *b = @3;
+        [a initWithFloat:3.2];
+        NSLog(@"a: %@, initRes: %@, %p", a, [a initWithFloat:3.2], a);
+        NSLog(@"b: %@, %p", b, b);
     }
     return 0;
 }
