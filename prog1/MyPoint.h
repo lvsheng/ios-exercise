@@ -20,4 +20,5 @@
 -(void) setX: (NSNumber *)x andY: (NSNumber *)y;
 -(void) print;
 -(void) test;
+-(long) test1: (long)x;
 @end

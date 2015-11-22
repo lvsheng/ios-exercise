@@ -10,31 +10,62 @@
 #import "./MyPoint.h"
 #import "test/MethodRouterTest.h"
 
-void testSEL ();
-void testPolymorphism();
-void testSelTime(int);
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-//        testSelTime((int) 1e2);
-//        testSelTime((int) 184);
-//        testSelTime((int) 1e3);
-//        testSEL();
-//        testPolymorphism();
-//        [MethodRouterTest test];
-        NSNumber *a = [NSNumber new]; //TODO 除了@，不能new或者alloc,init方式来创建一个NSNumber么？打印出来地址都是0呢~
-        NSNumber *b = @3;
-        [a initWithFloat:3.2];
-        NSLog(@"a: %@, initRes: %@, %p", a, [a initWithFloat:3.2], a);
-        NSLog(@"b: %@, %p", b, b);
+void testMessage () {
+    id p = [MyPoint new];
+    SEL sel = @selector(test1:);
+    IMP imp = [MyPoint instanceMethodForSelector:sel];
 
-        id i = [MyPoint new];
-        [i print];
-        i = @3;
-        //运行时才会报错，但编译时并不会。再次验证了真地是动态“发消息”，而不是提前编译时找到方法地址然后进行调用
-        //并且与比如java、c++的多态应该也不一样，如果是c++或java，应该是父类上有相应的方法，才允许调用，运行时再根据具体类找到要调用的函数地址
-        [i print];
-    }
-    return 0;
+    //函数调用时没有进行任何参数/返回值类型检查
+    //拿到imp之后，下面可以把它强转为任何签名的函数并进行调用。。。
+    long(*func)(id, SEL, long) = (void*)imp; //正常调用
+    NSLog(@"%ld", func(p, sel, (int)'a'));
+
+    char(*func2)(id, SEL, int) = (void*)imp; //返回值做不同类型来处理
+    NSLog(@"%c", func2(p, sel, (int)'a'));
+
+    int(*func3)(id, SEL, void *) = (void*)imp; //传入不同类型参数
+    NSLog(@"%d, %d", func3(p, sel, (void *)imp), (int)imp);
+
+    char*(*func4)(id, SEL, void *) = (void*)imp;
+    char b[2];
+    b[1] = '$';
+    NSLog(@"%c", *func4(p, sel, b));
+
+    int(*func5)(id, SEL, NSNumber *) = (void*)imp;
+    NSLog(@"%d", func5(p, sel, @1));
+
+    char(*func6)(id, SEL, int, int) = (void*)imp;
+    NSLog(@"%c", func6(p, sel, 64, 2)); //多余的参数被忽略
+
+    int(*func7)(id, SEL) = (void*)imp;
+    NSLog(@"%d", func7(p, sel)); //缺少参数也可以执行。。。
+
+    int *n = malloc(sizeof(int));
+    *n = 97;
+    int*(*func8)(id, SEL, int*) = (void*)imp;
+    NSLog(@"%d", *func8(p, sel, (n + 90))); //使用指针访问非法内存空间。。。
+
+    void*(*func9)(id, SEL, id) = (void*)imp;
+    void *r = func9(p, sel, @2);
+    NSLog(@"%p", r); //操作NSNumber指针
+    NSLog(@"%c", *(char*)r); //但NSNumber内部空间貌似不允许直接进入访问，此行会导致程序以139异常中止
+}
+
+void testCallMethodError () {
+    id i = [MyPoint new];
+    [i print];
+    i = @3;
+    //运行时才会报错，但编译时并不会。再次验证了真地是动态“发消息”，而不是提前编译时找到方法地址然后进行调用
+    //并且与比如java、c++的多态应该也不一样，如果是c++或java，应该是父类上有相应的方法，才允许调用，运行时再根据具体类找到要调用的函数地址
+    [i print];
+}
+
+void testNSNumber () {
+    NSNumber *a = [NSNumber new]; //TODO 除了@，不能new或者alloc,init方式来创建一个NSNumber么？打印出来地址都是0呢~
+    NSNumber *b = @3;
+    [a initWithFloat:3.2];
+    NSLog(@"a: %@, initRes: %@, %p", a, [a initWithFloat:3.2], a);
+    NSLog(@"b: %@, %p", b, b);
 }
 
 //TODO: 试现在o2o条件下的性能（两种方式）
@@ -186,3 +217,19 @@ void testPolymorphism () {
     [pSubSub setX:[NSNumber numberWithDouble:12]];
     [pSubSub print];
 }
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+//        testSelTime((int) 1e2);
+//        testSelTime((int) 184);
+//        testSelTime((int) 1e3);
+//        testSEL();
+//        testPolymorphism();
+//        [MethodRouterTest test];
+//        testNSNumber();
+//        testCallMethodError();
+        testMessage();
+    }
+    return 0;
+}
+

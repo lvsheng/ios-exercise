@@ -32,4 +32,7 @@
 }
 -(void) test {
 }
+-(long) test1: (long)x {
+    return 1 + x;
+}
 @end
