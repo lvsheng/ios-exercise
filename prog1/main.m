@@ -26,6 +26,13 @@ int main(int argc, const char * argv[]) {
         [a initWithFloat:3.2];
         NSLog(@"a: %@, initRes: %@, %p", a, [a initWithFloat:3.2], a);
         NSLog(@"b: %@, %p", b, b);
+
+        id i = [MyPoint new];
+        [i print];
+        i = @3;
+        //运行时才会报错，但编译时并不会。再次验证了真地是动态“发消息”，而不是提前编译时找到方法地址然后进行调用
+        //并且与比如java、c++的多态应该也不一样，如果是c++或java，应该是父类上有相应的方法，才允许调用，运行时再根据具体类找到要调用的函数地址
+        [i print];
     }
     return 0;
 }
