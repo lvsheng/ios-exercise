@@ -10,6 +10,38 @@
 #import "./MyPoint.h"
 #import "test/MethodRouterTest.h"
 
+@interface ClassA: NSObject
+-(int) add:(int)n;
+@end
+@implementation ClassA
+-(int) add: (int)n {
+    return n + 1;
+}
+@end
+@interface ClassB: NSObject
+-(float) add:(float)n;
+@end
+@implementation ClassB
+-(float) add:(float)n {
+    return n + (float)0.5;
+}
+@end
+void testCallSameNameMethod () {
+    id i;
+    ClassA *ca = [ClassA new];
+    NSLog(@"%d", [ca add:2]);
+    i = ca;
+    //因为ClassB存在，故编译器不知道通过选择器获取到的imp该转换为怎样的函数签名，于是下面两行报错
+//    NSLog(@"%d", [i add:2]);
+//    NSLog(@"%d", [i add:@2]);
+    //但自己转是ok的：
+    SEL sel = @selector(add:);
+    IMP imp = [i methodForSelector:sel];
+    int(*func)(id, SEL, int) = (void*)imp;
+    NSLog(@"%d", func(i, sel, 3));
+    NSLog(@"%d", [i performSelector:sel withObject: @3]); //performSelector只能带object参数，这里调用不正常，只做示例
+}
+
 void testMessage () {
     id p = [MyPoint new];
     SEL sel = @selector(test1:);
@@ -228,7 +260,8 @@ int main(int argc, const char * argv[]) {
 //        [MethodRouterTest test];
 //        testNSNumber();
 //        testCallMethodError();
-        testMessage();
+//        testMessage();
+        testCallSameNameMethod();
     }
     return 0;
 }
