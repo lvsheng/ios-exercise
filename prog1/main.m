@@ -30,6 +30,15 @@
     return n + (float)0.5;
 }
 @end
+void testIsMemberOf () {
+    ClassA *ca = [ClassA new];
+
+    NSLog(@"%p", [ClassA class]);
+    NSLog(@"%d", [ClassA class] == [[ClassA class] class]);
+    NSLog(@"%d", [ca isMemberOfClass:[ClassA class]]); //true
+    NSLog(@"%d", [ca isMemberOfClass:[NSObject class]]); //false
+    NSLog(@"%d", [ca isKindOfClass:[NSObject class]]); //true
+}
 void testCallSameNameMethod () {
     id i;
     ClassA *ca = [ClassA new];
@@ -265,7 +274,8 @@ int main(int argc, const char * argv[]) {
 //        testNSNumber();
 //        testCallMethodError();
 //        testMessage();
-        testCallSameNameMethod();
+//        testCallSameNameMethod();
+        testIsMemberOf();
     }
     return 0;
 }
